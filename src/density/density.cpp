@@ -13,7 +13,7 @@ int main() {
 
     //PRE: all particles have the same mass
     std::vector<Particle> particles = buildFromData();
-    double particle_mass = particles[0].get_mass();
+    double particle_mass = particles[0].mass;
     double total_mass = 0;
 
     //find the number of particles in every bin

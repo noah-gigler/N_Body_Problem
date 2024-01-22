@@ -12,7 +12,7 @@ std::vector<double> approximate_forces_in_bins(std::vector<Particle> particles, 
     for(int i = 0; i < bins; ++i){
         if(radii[i] > max_radius) continue;
         int index = floor(radii[i]/bin_size);
-        mass[index] += particles[i].get_mass();
+        mass[index] += particles[i].mass;
     }
     for(int i = 1; i < mass.size(); ++i){
         mass[i] += mass[i-1];

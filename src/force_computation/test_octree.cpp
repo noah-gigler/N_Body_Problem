@@ -18,7 +18,7 @@ int main() {
     tree.tree_boxes(&tree, boxes, minima, maxima);
     //sort boxes by x_value
     std::sort(boxes.begin(), boxes.end(), [](Particle a, Particle b) {
-        return a.get_x() < b.get_x();
+        return a.pos.x() < b.pos.x();
     });
     tree.centers_to_file(boxes, "../data/boxes.txt");
     tree.limits_to_file(boxes, minima, maxima, "../data/limits.txt");

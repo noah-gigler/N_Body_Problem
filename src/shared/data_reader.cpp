@@ -26,10 +26,3 @@ std::vector<Particle> buildFromData() {
     return particles;
 }
 
-std::vector<double> getRadii(std::vector<Particle> particles) {
-    std::vector<double> radii;
-    for (const auto& particle : particles) {
-        radii.push_back(particle.get_radius());
-    }
-    return radii;
-}

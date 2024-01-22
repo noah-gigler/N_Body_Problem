@@ -49,39 +49,39 @@ Octree::Octree(std::vector<Particle> particles, Particle minimum, Particle maxim
 
 void Octree::set_limits(std::vector<Particle> particles) {
     std::sort(particles.begin(), particles.end(), [](Particle a, Particle b) {
-        return a.get_x() < b.get_x();
+        return a.pos.x() < b.pos.x();
     });
-    double x_min = particles[0].get_x();
-    double x_max = particles[particles.size() - 1].get_x();
+    double x_min = particles[0].pos.x();
+    double x_max = particles[particles.size() - 1].pos.x();
 
     std::sort(particles.begin(), particles.end(), [](Particle a, Particle b) {
-        return a.get_y() < b.get_y();
+        return a.pos.y() < b.pos.y();
     });
 
-    double y_min = particles[0].get_y();
-    double y_max = particles[particles.size() - 1].get_y();
+    double y_min = particles[0].pos.y();
+    double y_max = particles[particles.size() - 1].pos.y();
 
     std::sort(particles.begin(), particles.end(), [](Particle a, Particle b) {
-        return a.get_z() < b.get_z();
+        return a.pos.z() < b.pos.z();
     });
 
-    double z_min = particles[0].get_z();
-    double z_max = particles[particles.size() - 1].get_z();
+    double z_min = particles[0].pos.z();
+    double z_max = particles[particles.size() - 1].pos.z();
 
     max = Particle(x_max, y_max, z_max);
     min = Particle(x_min, y_min, z_min);
 }
 
 void Octree::init_children(std::vector<Particle> particles, Particle min, Particle max) {
-    Particle center = get_center();
-    children[0] = new Octree(particles, Particle(min.get_x(), min.get_y(), min.get_z()), Particle(center.get_x(), center.get_y(), center.get_z()));
-    children[1] = new Octree(particles, Particle(center.get_x(), min.get_y(), min.get_z()), Particle(max.get_x(), center.get_y(), center.get_z()));
-    children[2] = new Octree(particles, Particle(min.get_x(), center.get_y(), min.get_z()), Particle(center.get_x(), max.get_y(), center.get_z()));
-    children[3] = new Octree(particles, Particle(center.get_x(), center.get_y(), min.get_z()), Particle(max.get_x(), max.get_y(), center.get_z()));
-    children[4] = new Octree(particles, Particle(min.get_x(), min.get_y(), center.get_z()), Particle(center.get_x(), center.get_y(), max.get_z()));
-    children[5] = new Octree(particles, Particle(center.get_x(), min.get_y(), center.get_z()), Particle(max.get_x(), center.get_y(), max.get_z()));
-    children[6] = new Octree(particles, Particle(min.get_x(), center.get_y(), center.get_z()), Particle(center.get_x(), max.get_y(), max.get_z()));
-    children[7] = new Octree(particles, Particle(center.get_x(), center.get_y(), center.get_z()), Particle(max.get_x(), max.get_y(), max.get_z()));
+    Particle center = this->get_center();
+    children[0] = new Octree(particles, Particle(min.pos.x(), min.pos.y(), min.pos.z()), Particle(center.pos.x(), center.pos.y(), center.pos.z()));
+    children[1] = new Octree(particles, Particle(center.pos.x(), min.pos.y(), min.pos.z()), Particle(max.pos.x(), center.pos.y(), center.pos.z()));
+    children[2] = new Octree(particles, Particle(min.pos.x(), center.pos.y(), min.pos.z()), Particle(center.pos.x(), max.pos.y(), center.pos.z()));
+    children[3] = new Octree(particles, Particle(center.pos.x(), center.pos.y(), min.pos.z()), Particle(max.pos.x(), max.pos.y(), center.pos.z()));
+    children[4] = new Octree(particles, Particle(min.pos.x(), min.pos.y(), center.pos.z()), Particle(center.pos.x(), center.pos.y(), max.pos.z()));
+    children[5] = new Octree(particles, Particle(center.pos.x(), min.pos.y(), center.pos.z()), Particle(max.pos.x(), center.pos.y(), max.pos.z()));
+    children[6] = new Octree(particles, Particle(min.pos.x(), center.pos.y(), center.pos.z()), Particle(center.pos.x(), max.pos.y(), max.pos.z()));
+    children[7] = new Octree(particles, Particle(center.pos.x(), center.pos.y(), center.pos.z()), Particle(max.pos.x(), max.pos.y(), max.pos.z()));
 }
 
 //TODO
@@ -100,13 +100,13 @@ void Octree::init_children(std::vector<Particle> particles, Particle min, Partic
 //}
 
 Particle Octree::get_center() {
-    return Particle(0, Eigen::Vector3d((max.get_x() + min.get_x()) / 2, (max.get_y() + min.get_y()) / 2,
-                                       (max.get_z() + min.get_z()) / 2), Eigen::Vector3d(0, 0, 0));
+    return Particle(0, Eigen::Vector3d((max.pos.x() + min.pos.x()) / 2, (max.pos.y() + min.pos.y()) / 2,
+                                       (max.pos.z() + min.pos.z()) / 2), Eigen::Vector3d(0, 0, 0));
 }
 
 bool Octree::is_in_box(Particle p) {
-    return (p.get_x() >= min.get_x() && p.get_x() <= max.get_x() && p.get_y() >= min.get_y() && p.get_y() <= max.get_y()
-            && p.get_z() >= min.get_z() && p.get_z() <= max.get_z());
+    return (p.pos.x() >= min.pos.x() && p.pos.x() <= max.pos.x() && p.pos.y() >= min.pos.y() && p.pos.y() <= max.pos.y()
+            && p.pos.z() >= min.pos.z() && p.pos.z() <= max.pos.z());
 }
 
 bool Octree::is_leaf() {
@@ -117,22 +117,22 @@ bool Octree::is_empty() {
     return type == Empty;
 }
 
-double Octree::get_mass() {
+double Octree::mass {
     if(is_empty()){
         return 0;
     }
     if(is_leaf()){
-        return particle_in_box.get_mass();
+        return particle_in_box.mass;
     }
     double mass = 0;
     for (auto & i : children) {
-        mass += i->get_mass();
+        mass += i->mass;
     }
     return mass;
 }
 
 double Octree::side_length() {
-    Eigen::Vector3d vec = max.get_position() - min.get_position();
+    Eigen::Vector3d vec = max.pos - min.pos;
     return vec.lpNorm<Eigen::Infinity>();
 }
 
@@ -142,12 +142,12 @@ Eigen::Vector3d Octree::get_center_of_mass() {
         return center_of_mass;
     }
     if(is_leaf()){
-        return particle_in_box.get_position() * particle_in_box.get_mass();
+        return particle_in_box.pos * particle_in_box.mass;
     }
     for(auto & i : children){
         center_of_mass += i->get_center_of_mass();
     }
-    return center_of_mass/this->get_mass();
+    return center_of_mass/this->mass;
 }
 
 Eigen::Vector3d Octree::force_on_particle(Particle p, double softening, double theta) {
@@ -160,7 +160,7 @@ Eigen::Vector3d Octree::force_on_particle(Particle p, double softening, double t
             return force;
         }
         else{
-            return newtonian_force(p, particle_in_box, softening);
+            return gravitational_force(p, particle_in_box, softening);
         }
     }
     else {
@@ -168,8 +168,8 @@ Eigen::Vector3d Octree::force_on_particle(Particle p, double softening, double t
         for (int i = 0; i < 8; ++i) {
             double a = d/p.get_distance(children[i]->get_center_of_mass());
             if (a < theta) {
-                Particle p2 = Particle(children[i]->get_mass(), children[i]->get_center_of_mass());
-                force += newtonian_force(p, p2, softening);
+                Particle p2 = Particle(children[i]->mass, children[i]->get_center_of_mass());
+                force += gravitational_force(p, p2, softening);
             }
             else{
                 force += children[i]->force_on_particle(p, softening, theta);
@@ -195,7 +195,7 @@ void Octree::centers_to_file(std::vector<Particle>& boxes, const std::string& fi
     std::ofstream file;
     file.open(filename);
     for (auto & box : boxes) {
-        file << box.get_x() << " " << box.get_y() << " " << box.get_z() << std::endl;
+        file << box.pos.x() << " " << box.pos.y() << " " << box.pos.z() << std::endl;
     }
     file.close();
 }
@@ -204,7 +204,7 @@ void Octree::limits_to_file(std::vector<Particle>& boxes, std::vector<Particle>&
     std::ofstream file;
     file.open(filename);
     for (int i = 0; i < boxes.size(); ++i) {
-        file << minima[i].get_x() << " " << minima[i].get_y() << " " << minima[i].get_z() << " " << maxima[i].get_x() << " " << maxima[i].get_y() << " " << maxima[i].get_z() << std::endl;
+        file << minima[i].pos.x() << " " << minima[i].pos.y() << " " << minima[i].pos.z() << " " << maxima[i].pos.x() << " " << maxima[i].pos.y() << " " << maxima[i].pos.z() << std::endl;
     }
     file.close();
 }

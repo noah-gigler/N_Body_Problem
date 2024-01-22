@@ -27,7 +27,7 @@ public:
 
     //getters
     Particle get_center();
-    double get_mass();
+    double mass;
     Eigen::Vector3d get_center_of_mass();
     bool is_leaf();
     bool is_empty();
