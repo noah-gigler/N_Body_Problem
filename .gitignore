@@ -1,0 +1,5 @@
+cmake-build*
+data
+build
+.vscode
+*.pdf
