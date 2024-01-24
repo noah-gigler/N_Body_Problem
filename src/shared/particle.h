@@ -10,9 +10,10 @@ class Particle {
 public:
     Particle();
     Particle(double m, Eigen::Vector3d x, Eigen::Vector3d v = {}, Eigen::Vector3d forces = {});
-    double get_distance(Particle p) const;
-    double get_distance(Eigen::Vector3d p) const;
+    double get_distance(Particle other) const;
+    double get_distance(Eigen::Vector3d other) const;
     double get_radius() const;
+
 
 public:
     double mass;

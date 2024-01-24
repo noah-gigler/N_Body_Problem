@@ -4,7 +4,7 @@
 
 #include <vector>
 #include <fstream>
-#include <numeric>
+#include <iomanip>
 #include "../shared/particle.h"
 #include "../shared/data_reader.h"
 #include "force_helper.h"
@@ -24,14 +24,30 @@ int main () {
     //calculate the approximated force per bin
     std::vector<double> approximated_forces = approximate_forces_in_bins(particles, bins, max_radius);
 
+    //octree approximation
+    Octree_force_approximation(particles, softening, 0.5);
+    std::vector<double> octree_forces = forces_to_bins(particles, bins, max_radius);
+
+
     //write the data to a file
     double bin_size = max_radius / bins;
     std::ofstream myfile;
-    myfile.open ("../data/force.txt");
+    myfile.open ("../output/direct_vs_approx.txt");
     for(int i = 0; i < bins; ++i){
-        myfile << bin_size*i << " " << observed_forces[i] << " " << approximated_forces[i] << std::endl;
+            myfile << std::setw(6) << bin_size*i << "  "
+                    << std::setw(11) << observed_forces[i] << "  "
+                    << approximated_forces[i] << std::endl;
     }
     myfile.close();
+
+    std::ofstream myfile2;
+    myfile2.open ("../output/direct_vs_octree.txt");
+    for(int i = 0; i < bins; ++i){
+        myfile2 << std::setw(6) << bin_size*i << "  "
+               << std::setw(11) << observed_forces[i] << "  "
+               << octree_forces[i] << std::endl;
+    }
+    myfile2.close();
 
     return 0;
 }

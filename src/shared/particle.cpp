@@ -14,12 +14,12 @@ Particle::Particle(double m, Eigen::Vector3d x, Eigen::Vector3d v, Eigen::Vector
     force = f;
 }
 
-double Particle::get_distance(Particle p) const {
-    return (this->pos - p.pos).norm();
+double Particle::get_distance(Particle other) const {
+    return (this->pos - other.pos).norm();
 }
 
-double Particle::get_distance(Eigen::Vector3d p) const {
-    return (this->pos - p).norm();
+double Particle::get_distance(Eigen::Vector3d other) const {
+    return (this->pos - other).norm();
 }
 
 double Particle::get_radius() const {
