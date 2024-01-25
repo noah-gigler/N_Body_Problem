@@ -5,6 +5,7 @@
 
 Eigen::Vector3d gravitational_force(const Particle &p1, const Particle &p2, double softening){
     Eigen::Vector3d direction = p1.pos - p2.pos;
+    assert(direction.norm() != 0);
     double distance = direction.norm();
     double force = - p1.mass * p2.mass / (distance * distance + softening * softening);
     return force * direction.normalized();

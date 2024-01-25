@@ -33,15 +33,15 @@ public:
     Eigen::Vector3d force_on_particle(Particle &p, double softening, double theta);
 
     //TESTING
-    double count_boxes();
-    int count_empty_boxes();
-    void centers_to_file(std::vector<Eigen::Vector3d> &boxes, const std::string &filename);
-    void limits_to_file(std::vector<Eigen::Vector3d> &boxes, std::vector<Eigen::Vector3d> &minima,
-                        std::vector<Eigen::Vector3d> &maxima, const std::string &filename);
-    void tree_boxes(Octree *node, std::vector<Eigen::Vector3d> &boxes,
-                    std::vector<Eigen::Vector3d>& minima, std::vector<Eigen::Vector3d>& maxima);
-    Eigen::Vector3d get_min();
-    Eigen::Vector3d get_max();
+//    double count_boxes();
+//    int count_empty_boxes();
+//    void centers_to_file(std::vector<Eigen::Vector3d> &boxes, const std::string &filename);
+//    void limits_to_file(std::vector<Eigen::Vector3d> &boxes, std::vector<Eigen::Vector3d> &minima,
+//                        std::vector<Eigen::Vector3d> &maxima, const std::string &filename);
+//    void tree_boxes(Octree *node, std::vector<Eigen::Vector3d> &boxes,
+//                    std::vector<Eigen::Vector3d>& minima, std::vector<Eigen::Vector3d>& maxima);
+//    Eigen::Vector3d get_min();
+//    Eigen::Vector3d get_max();
 
 public:
     Eigen::Vector3d com;
@@ -55,6 +55,7 @@ private:
     std::unique_ptr<Octree> children[8];
 
     void set_limits(std::vector<Particle> particles);
+    void init_tree(std::vector<Particle> &particles);
     void init_children(std::vector<Particle> &particles, Eigen::Vector3d minimum, Eigen::Vector3d maximum);
 };
 

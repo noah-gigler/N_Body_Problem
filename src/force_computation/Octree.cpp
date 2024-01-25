@@ -6,31 +6,16 @@
 
 Octree::Octree(std::vector<Particle> &particles) {
     set_limits(particles);
-    if (particles.size() > 1) {
-        type = Internal;
-        init_children(particles, min, max);
-        mass = 0;
-        com = {0, 0, 0};
-        for(auto &p : particles){
-            mass += p.mass;
-            com += p.pos * p.mass;
-        }
-        com /= mass;
-    }
-    else{
-        if(particles.size() == 1) {
-            particle_in_box = particles[0];
-            type = Leaf;
-        }
-        else{
-            type = Empty;
-        }
-    }
+    init_tree(particles);
 }
 
 Octree::Octree(std::vector<Particle> &particles, Eigen::Vector3d minimum, Eigen::Vector3d maximum) {
     min = minimum;
     max = maximum;
+    init_tree(particles);
+}
+
+void Octree::init_tree(std::vector<Particle> &particles) {
     //check if particles are in box
     std::vector<Particle> particles_in_box;
     for (Particle p: particles) {
@@ -43,7 +28,7 @@ Octree::Octree(std::vector<Particle> &particles, Eigen::Vector3d minimum, Eigen:
         init_children(particles_in_box, min, max);
         mass = 0;
         com = {0, 0, 0};
-        for(auto &p : particles){
+        for(auto &p : particles_in_box){
             mass += p.mass;
             com += p.pos * p.mass;
         }
@@ -126,7 +111,7 @@ Eigen::Vector3d Octree::force_on_particle(Particle &p, double softening, double 
         return force;
     }
     if (is_leaf()) {
-        //TODO
+        //TODO make sure this works
         if(&particle_in_box == &p){
             return force;
         }
@@ -134,8 +119,8 @@ Eigen::Vector3d Octree::force_on_particle(Particle &p, double softening, double 
             return gravitational_force(p, particle_in_box, softening);
         }
     }
-    double d = side_length();
-    double a = d/p.get_distance(com);
+    //check if particle is far enough away (D/r < theta)
+    double a = side_length()/p.get_distance(com);
     if (a < theta) {
         Particle p2 = Particle(mass, com);
         force += gravitational_force(p, p2, softening);
@@ -148,77 +133,77 @@ Eigen::Vector3d Octree::force_on_particle(Particle &p, double softening, double 
     return force;
 }
 
-void Octree::tree_boxes(Octree* node, std::vector<Eigen::Vector3d>& boxes, std::vector<Eigen::Vector3d>& minima,
-                        std::vector<Eigen::Vector3d>& maxima) {
-    if (node->is_leaf() || node->is_empty()) {
-        return;
-    }
-    minima.push_back(node->get_min());
-    maxima.push_back(node->get_max());
-    boxes.push_back(node->get_center());
-    for (int i = 0; i < 8; ++i) {
-        tree_boxes(node->children[i].get(), boxes, minima, maxima);
-    }
-}
-
-void Octree::centers_to_file(std::vector<Eigen::Vector3d>& boxes, const std::string& filename) {
-    std::ofstream file;
-    file.open(filename);
-    for (auto & box : boxes) {
-        file << box.x() << " " << box.y() << " " << box.z() << std::endl;
-    }
-    file.close();
-}
-
-void Octree::limits_to_file(std::vector<Eigen::Vector3d>& boxes, std::vector<Eigen::Vector3d>& minima, std::vector<Eigen::Vector3d>& maxima, const std::string& filename) {
-    std::ofstream file;
-    file.open(filename);
-    for (int i = 0; i < boxes.size(); ++i) {
-        file << minima[i].x() << " " << minima[i].y() << " " << minima[i].z() << " " << maxima[i].x() << " " << maxima[i].y() << " " << maxima[i].z() << std::endl;
-    }
-    file.close();
-}
-
-
-double Octree::count_boxes() {
-    //doesnt count empty boxes
-    if(is_empty()){
-        return 0;
-    }
-    if (is_leaf()) {
-        return 1;
-    }
-    else {
-        double nodes = 1;
-        for (int i = 0; i < 8; ++i) {
-            nodes += children[i]->count_boxes();
-        }
-        return nodes;
-    }
-}
-
-int Octree::count_empty_boxes(){
-    int empty_boxes = 0;
-    if (is_leaf()){
-        return 0;
-    }
-    if(is_empty()){
-        return 1;
-    }
-    else {
-        for (int i = 0; i < 8; ++i) {
-            empty_boxes += children[i]->count_empty_boxes();
-        }
-    }
-    return empty_boxes;
-}
-
-Eigen::Vector3d Octree::get_min() {
-    return min;
-}
-
-Eigen::Vector3d Octree::get_max() {
-    return max;
-}
+//void Octree::tree_boxes(Octree* node, std::vector<Eigen::Vector3d>& boxes, std::vector<Eigen::Vector3d>& minima,
+//                        std::vector<Eigen::Vector3d>& maxima) {
+//    if (node->is_leaf() || node->is_empty()) {
+//        return;
+//    }
+//    minima.push_back(node->get_min());
+//    maxima.push_back(node->get_max());
+//    boxes.push_back(node->get_center());
+//    for (int i = 0; i < 8; ++i) {
+//        tree_boxes(node->children[i].get(), boxes, minima, maxima);
+//    }
+//}
+//
+//void Octree::centers_to_file(std::vector<Eigen::Vector3d>& boxes, const std::string& filename) {
+//    std::ofstream file;
+//    file.open(filename);
+//    for (auto & box : boxes) {
+//        file << box.x() << " " << box.y() << " " << box.z() << std::endl;
+//    }
+//    file.close();
+//}
+//
+//void Octree::limits_to_file(std::vector<Eigen::Vector3d>& boxes, std::vector<Eigen::Vector3d>& minima, std::vector<Eigen::Vector3d>& maxima, const std::string& filename) {
+//    std::ofstream file;
+//    file.open(filename);
+//    for (int i = 0; i < boxes.size(); ++i) {
+//        file << minima[i].x() << " " << minima[i].y() << " " << minima[i].z() << " " << maxima[i].x() << " " << maxima[i].y() << " " << maxima[i].z() << std::endl;
+//    }
+//    file.close();
+//}
+//
+//
+//double Octree::count_boxes() {
+//    //doesnt count empty boxes
+//    if(is_empty()){
+//        return 0;
+//    }
+//    if (is_leaf()) {
+//        return 1;
+//    }
+//    else {
+//        double nodes = 1;
+//        for (int i = 0; i < 8; ++i) {
+//            nodes += children[i]->count_boxes();
+//        }
+//        return nodes;
+//    }
+//}
+//
+//int Octree::count_empty_boxes(){
+//    int empty_boxes = 0;
+//    if (is_leaf()){
+//        return 0;
+//    }
+//    if(is_empty()){
+//        return 1;
+//    }
+//    else {
+//        for (int i = 0; i < 8; ++i) {
+//            empty_boxes += children[i]->count_empty_boxes();
+//        }
+//    }
+//    return empty_boxes;
+//}
+//
+//Eigen::Vector3d Octree::get_min() {
+//    return min;
+//}
+//
+//Eigen::Vector3d Octree::get_max() {
+//    return max;
+//}
 
 
