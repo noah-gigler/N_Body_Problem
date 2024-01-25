@@ -18,7 +18,7 @@ Octree::Octree(std::vector<Particle> &particles, Eigen::Vector3d minimum, Eigen:
 void Octree::init_tree(std::vector<Particle> &particles) {
     //check if particles are in box
     std::vector<Particle> particles_in_box;
-    for (Particle p: particles) {
+    for (const Particle& p: particles) {
         if (is_in_box(p)) {
             particles_in_box.push_back(p);
         }
@@ -92,14 +92,6 @@ bool Octree::is_in_box(const Particle &p) {
             && p.pos.z() >= min.z()&& p.pos.z() <= max.z());
 }
 
-bool Octree::is_leaf() {
-    return type == Leaf;
-}
-
-bool Octree::is_empty() {
-    return type == Empty;
-}
-
 double Octree::side_length() {
     Eigen::Vector3d vec = max - min;
     return vec.lpNorm<Eigen::Infinity>();
@@ -107,10 +99,10 @@ double Octree::side_length() {
 
 Eigen::Vector3d Octree::force_on_particle(Particle &p, double softening, double theta) {
     Eigen::Vector3d force = {0, 0, 0};
-    if(is_empty()) {
+    if(type == Empty) {
         return force;
     }
-    if (is_leaf()) {
+    if (type == Leaf) {
         //TODO make sure this works
         if(particle_in_box.pos == p.pos){
             return force;
@@ -126,8 +118,8 @@ Eigen::Vector3d Octree::force_on_particle(Particle &p, double softening, double 
         force += gravitational_force(p, p2, softening);
     }
     else {
-        for (int i = 0; i < 8; ++i) {
-            force += children[i]->force_on_particle(p, softening, theta);
+        for (const auto & i : children) {
+            force += i->force_on_particle(p, softening, theta);
         }
     }
     return force;

@@ -23,29 +23,23 @@ public:
     Octree() = default;
     explicit Octree(std::vector<Particle> &particles);
     Octree(std::vector<Particle> &particles, Eigen::Vector3d minimum, Eigen::Vector3d maximum);
-
-    //getters
-    Eigen::Vector3d get_center();
-    bool is_leaf();
-    bool is_empty();
-    double side_length();
-    bool is_in_box(const Particle &p);
     Eigen::Vector3d force_on_particle(Particle &p, double softening, double theta);
 
-public:
-    Eigen::Vector3d com;
-    double mass;
-
 private:
-    node_type type;
-    Eigen::Vector3d min;
-    Eigen::Vector3d max;
-    Particle particle_in_box;
-    std::unique_ptr<Octree> children[8];
-
+    bool is_in_box(const Particle &p);
     void set_limits(std::vector<Particle> particles);
     void init_tree(std::vector<Particle> &particles);
     void init_children(std::vector<Particle> &particles, Eigen::Vector3d minimum, Eigen::Vector3d maximum);
+    Eigen::Vector3d get_center();
+    double side_length();
+
+    node_type type;
+    Eigen::Vector3d min;
+    Eigen::Vector3d max;
+    Eigen::Vector3d com;
+    double mass;
+    Particle particle_in_box;
+    std::unique_ptr<Octree> children[8];
 };
 
 #endif //NBODYPROBLEM_OCTREE_H
