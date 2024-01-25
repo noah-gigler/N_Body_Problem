@@ -19,18 +19,25 @@ add_executable(density src/density/density.cpp
 
 add_executable(force_computation
         src/force_computation/force_computation.cpp
-#        src/force_computation/Octree.cpp
+        src/force_computation/Octree.cpp
         src/force_computation/force_helper.cpp
         src/shared/particle.cpp
         src/shared/data_reader.cpp)
 
 add_executable(test
         src/force_computation/test_octree.cpp
-#        src/force_computation/Octree.cpp
+        src/force_computation/Octree.cpp
         src/force_computation/force_helper.cpp
         src/shared/particle.cpp
         src/shared/data_reader.cpp)
 
-target_link_libraries(density Eigen3::Eigen Boost::iostreams)
-target_link_libraries(force_computation Eigen3::Eigen Boost::iostreams OpenMP::OpenMP_CXX)
-target_link_libraries(test Eigen3::Eigen Boost::iostreams OpenMP::OpenMP_CXX)
+add_executable(test2
+        src/force_computation/test_binning.cpp
+        src/force_computation/force_helper.cpp
+        src/shared/particle.cpp
+        src/force_computation/Octree.cpp)
+
+target_link_libraries(density Eigen3::Eigen)
+target_link_libraries(force_computation Eigen3::Eigen OpenMP::OpenMP_CXX)
+target_link_libraries(test Eigen3::Eigen OpenMP::OpenMP_CXX)
+target_link_libraries(test2 Eigen3::Eigen)

@@ -25,7 +25,7 @@ int main () {
     std::vector<double> approximated_forces = approximate_forces_in_bins(particles, bins, max_radius);
 
     //octree approximation
-    Octree_force_approximation(particles, softening, 0.5);
+    Octree_force_approximation(particles, softening, 1.5);
     std::vector<double> octree_forces = forces_to_bins(particles, bins, max_radius);
 
 
@@ -48,6 +48,18 @@ int main () {
                << octree_forces[i] << std::endl;
     }
     myfile2.close();
+
+    double mean_relative_error;
+    double mean_octree_error;
+    for (int i = 0; i < bins; ++i) {
+        mean_relative_error += std::abs(observed_forces[i] - approximated_forces[i])/observed_forces[i];
+        mean_octree_error += std::abs(observed_forces[i] - octree_forces[i])/observed_forces[i];
+    }
+    mean_relative_error /= bins;
+    std::cout << "mean relative error: " << mean_relative_error << std::endl;
+    mean_octree_error /= bins;
+    std::cout << "mean octree error: " << mean_octree_error << std::endl;
+
 
     return 0;
 }
