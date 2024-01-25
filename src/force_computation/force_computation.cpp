@@ -25,7 +25,7 @@ int main () {
     std::vector<double> approximated_forces = approximate_forces_in_bins(particles, bins, max_radius);
 
     //octree approximation
-    Octree_force_approximation(particles, softening, 1.5);
+    Octree_force_approximation(particles, softening, 0.5);
     std::vector<double> octree_forces = forces_to_bins(particles, bins, max_radius);
 
 

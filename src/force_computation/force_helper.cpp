@@ -106,8 +106,8 @@ void Octree_force_approximation(std::vector<Particle> &particles, double softeni
     for(int i = 0; i < particles.size(); ++i){
         Eigen::Vector3d force = tree.force_on_particle(particles[i], softening, theta);
         atomic_vec_add(particles[i].force, force);
-        if(i % 1000 == 0){
-            std::cout << "particle " << i << " done" << std::endl;
-        }
+//        if(i % 1000 == 0){
+//            std::cout << "particle " << i << " done" << std::endl;
+//        }
     }
 }

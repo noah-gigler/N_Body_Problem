@@ -1,0 +1,47 @@
+softening: mean_dist runs: 10
+
+direct: 7958.3
+theta: 0 time: 5479 error: 6.4868e-16
+theta: 0.5 time: 534 error: 0.00126496
+theta: 1 time: 85.7 error: 0.00399982
+theta: 1.5 time: 36.4 error: 0.0078743
+theta: 2 time: 25.5 error: 0.0125896
+
+softening: 0.0 runs: 1
+
+direct: 6521
+theta: 0 time: 48356 error: 6.47595e-16
+theta: 0.5 time: 7382 error: 0.000392028
+theta: 1 time: 1443 error: 0.000886423
+theta: 1.5 time: 844 error: 0.00169725
+theta: 2 time: 419 error: 0.00595801
+theta: 3 time: 186 error: 0.0138852
+
+softening: 1.5 mean_dist runs: 1
+
+direct: 7933
+theta: 0.5 time: 4466 error: 0.00158788
+theta: 1 time: 688 error: 0.00502954
+theta: 1.5 time: 341 error: 0.00963031
+theta: 2 time: 203 error: 0.0150841
+theta: 3 time: 151 error: 0.0287518
+
+softening: 2 * mean_dist runs: 1
+
+direct: 6978
+theta: 0.5 time: 4352 error: 0.00186651
+theta: 1 time: 664 error: 0.00587312
+theta: 1.5 time: 323 error: 0.0110603
+theta: 2 time: 199 error: 0.0170781
+theta: 3 time: 142 error: 0.0312242
+
+softening: 1 * mean_dist runs: 1
+
+direct: 6841
+theta: 0.1 time: 28764 error: 4.97374e-05
+theta: 0.25 time: 14301 error: 0.000343226
+theta: 0.4 time: 7086 error: 0.000858835
+theta: 0.5 time: 4323 error: 0.00126668
+theta: 1 time: 697 error: 0.00399983
+theta: 1.5 time: 345 error: 0.0078586
+theta: 2 time: 221 error: 0.0125895
