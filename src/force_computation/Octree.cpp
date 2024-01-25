@@ -124,5 +124,3 @@ Eigen::Vector3d Octree::force_on_particle(Particle &p, double softening, double 
     }
     return force;
 }
-
-

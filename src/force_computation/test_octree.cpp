@@ -21,7 +21,7 @@ void test_theta(std::vector<Particle> &particles, unsigned bins, double max_radi
 
     std::cout << "direct: " << time_direct << std::endl;
 
-    for(auto i: {0.4, 1.5, 2.0}) {
+    for(auto i: {0.5, 1.0, 1.5}) {
         double time_octree = 0.0;
         for(int n = 0; n < N; ++n) {
             auto start = std::chrono::high_resolution_clock::now();
@@ -30,7 +30,7 @@ void test_theta(std::vector<Particle> &particles, unsigned bins, double max_radi
             time_octree = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
         }
         time_octree /= N;
-        double mean_relative_error;
+        double mean_relative_error = 0.0;
         std::vector<double> octree_forces = forces_to_bins(particles, bins, max_radius);
         for (int j = 0; j < bins; ++j) {
             mean_relative_error += std::abs(observed_forces[j] - octree_forces[j])/observed_forces[j];
@@ -48,5 +48,9 @@ int main() {
     Octree tree = Octree(particles);
     double softening = mean_distance(particles);
 
-    test_theta(particles, bins, max_radius, 1 * softening, 1);
+    Octree_force_approximation(particles, softening, 0);
+
+//    test_theta(particles, bins, max_radius, 1 * softening, 1);
+
+
 }
