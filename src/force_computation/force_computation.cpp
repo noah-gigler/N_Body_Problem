@@ -6,7 +6,7 @@
 #include <fstream>
 #include <iomanip>
 #include "../shared/particle.h"
-#include "../shared/data_reader.h"
+#include "../shared/data_io.h"
 #include "force_helper.h"
 
 int main () {
@@ -17,15 +17,9 @@ int main () {
     int bins = 200;
 
     //calculate the observed force per bin directly
-    double softening = mean_distance(particles);
-    compute_forces(particles, 0.0);
-    std::vector<double> observed_forces_0 = forces_to_bins(particles, bins, max_radius);
-    compute_forces(particles, 0.05 * softening);
-    std::vector<double> observed_forces_05 = forces_to_bins(particles, bins, max_radius);
-    compute_forces(particles, 0.1 * softening);
-    std::vector<double> observed_forces_1 = forces_to_bins(particles, bins, max_radius);
-    compute_forces(particles, 1 * softening);
-    std::vector<double> observed_forces_15 = forces_to_bins(particles, bins, max_radius);
+    double softening = 0.2 * mean_distance(particles);
+    compute_forces(particles, softening);
+    std::vector<double> observed_forces = forces_to_bins(particles, bins, max_radius);
 
     //calculate the approximated force per bin
     std::vector<double> approximated_forces = approximate_forces_in_bins(particles, bins, max_radius);
@@ -41,33 +35,30 @@ int main () {
     myfile.open ("../output/direct_vs_approx.txt");
     for(int i = 0; i < bins; ++i){
             myfile << std::setw(6) << bin_size*i << "  "
-                    << std::setw(11) << observed_forces_0[i] << "  "
-                    << std::setw(11) << observed_forces_05[i] << "  "
-                    << std::setw(11) << observed_forces_1[i] << "  "
-                    << std::setw(11) << observed_forces_15[i] << "  "
+                    << std::setw(11) << observed_forces[i] << "  "
                     << approximated_forces[i] << std::endl;
     }
     myfile.close();
 
-    // std::ofstream myfile2;
-    // myfile2.open ("../output/direct_vs_octree.txt");
-    // for(int i = 0; i < bins; ++i){
-    //     myfile2 << std::setw(6) << bin_size*i << "  "
-    //            << std::setw(11) << observed_forces[i] << "  "
-    //            << octree_forces[i] << std::endl;
-    // }
-    // myfile2.close();
+     std::ofstream myfile2;
+     myfile2.open ("../output/direct_vs_octree.txt");
+     for(int i = 0; i < bins; ++i){
+         myfile2 << std::setw(6) << bin_size*i << "  "
+                << std::setw(11) << observed_forces[i] << "  "
+                << octree_forces[i] << std::endl;
+     }
+     myfile2.close();
 
-    // double mean_relative_error;
-    // double mean_octree_error;
-    // for (int i = 0; i < bins; ++i) {
-    //     mean_relative_error += std::abs(observed_forces[i] - approximated_forces[i])/observed_forces[i];
-    //     mean_octree_error += std::abs(observed_forces[i] - octree_forces[i])/observed_forces[i];
-    // }
-    // mean_relative_error /= bins;
-    // std::cout << "mean relative error: " << mean_relative_error << std::endl;
-    // mean_octree_error /= bins;
-    // std::cout << "mean octree error: " << mean_octree_error << std::endl;
+     double mean_relative_error;
+     double mean_octree_error;
+     for (int i = 0; i < bins; ++i) {
+         mean_relative_error += std::abs(observed_forces[i] - approximated_forces[i])/observed_forces[i];
+         mean_octree_error += std::abs(observed_forces[i] - octree_forces[i])/observed_forces[i];
+     }
+     mean_relative_error /= bins;
+     std::cout << "mean relative error: " << mean_relative_error << std::endl;
+     mean_octree_error /= bins;
+     std::cout << "mean octree error: " << mean_octree_error << std::endl;
 
 
     return 0;

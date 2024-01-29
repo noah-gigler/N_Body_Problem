@@ -23,16 +23,19 @@ public:
         Leapfrog,
     };
 
-    Simulation(std::vector<Particle> particles, double dt, double softening, force_type force, integrator_type integrator);
-    void run(unsigned n_steps);
+    Simulation(std::string name, std::vector<Particle> particles, double dt, double softening,
+               force_type force, integrator_type integrator);
+    void run(unsigned n_steps, unsigned steps_per_frame = 1);
     void leapfrog_step();
     void euler_step();
     void forces_step();
+    void frame_to_file(int frame_number);
 
+    std::vector<Particle> particles;
 private:
+    std::string name;
     force_type force;
     integrator_type integrator;
-    std::vector<Particle> particles;
     double dt;
     double softening;
 };

@@ -49,6 +49,16 @@ double mean_distance(std::vector<Particle> &particles){
     }
     mean_distance /= hmr_index*(hmr_index-1)/2;
     std::cout << "mean distance: " << mean_distance << std::endl;
+
+    //calculate the relaxation time
+    double hmr = particles[hmr_index].get_radius();
+    std::cout << "hmr: " << hmr << std::endl;
+    double mass_in_hmr = particles[hmr_index].mass * hmr_index;
+    double circular_velocity = sqrt(mass_in_hmr/hmr);
+    std::cout << "circular velocity: " << circular_velocity << std::endl;
+    double N = particles.size();
+    double relaxation_time = N/(8 * log(N)) * hmr / circular_velocity;
+    std::cout << "relaxation time: " << relaxation_time << std::endl;
     return mean_distance;
 }
 

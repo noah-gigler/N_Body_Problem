@@ -2,7 +2,7 @@
 // Created by noahe on 15/01/2024.
 //
 #include "../shared/particle.h"
-#include "../shared/data_reader.h"
+#include "../shared/data_io.h"
 #include "Octree.h"
 #include "force_helper.h"
 #include <iostream>

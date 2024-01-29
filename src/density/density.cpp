@@ -2,14 +2,13 @@
 #include <algorithm>
 #include <gnuplot-iostream.h>
 #include "../shared/particle.h"
-#include "../shared/data_reader.h"
+#include "../shared/data_io.h"
 #include "non_linear_solver.h"
 
 int main() {
     int bins = 200;
     double max_radius = 1;
     double bin_size = max_radius/bins;
-    //double max_radius = *std::max_element(radii.begin(), radii.end());
 
     //PRE: all particles have the same mass
     std::vector<Particle> particles = buildFromData();
@@ -17,12 +16,11 @@ int main() {
     double total_mass = 0;
 
     //find the number of particles in every bin
-    std::vector<double> radii = getRadii(particles);
-    std::vector<int> num_particles(bins, 0);
-    for(auto i:radii){
-        if(i > max_radius) continue;
+    std::vector<double> num_particles(bins, 0);
+    for(auto i:particles){
+        if(i.get_radius() > max_radius) continue;
         total_mass += particle_mass;
-        int b = floor(i/bin_size);
+        int b = floor(i.get_radius()/bin_size);
         num_particles[b] += 1;
     }
 
@@ -52,32 +50,45 @@ int main() {
 
     double scale_length = a(0);
     std::vector<double> density_approximation(bins, 0);
+    std::vector<double> num_expected_particles(bins, 0);
     for(int i = 0; i < bins; ++i){
         double radius = bin_size*i;
         //d(r) = M/2pi * a/r * 1/(a + r)^3
         density_approximation[i] = total_mass/(2*M_PI) * scale_length/radius *(1/pow(scale_length+radius,3));
+        double bin_volume = 4.0/3.0*M_PI*(pow((i+1)*bin_size,3)-pow(i*bin_size,3));
+        num_expected_particles[i] = density_approximation[i] * bin_volume/particle_mass;
     }
 
-
-    // Plotting
-    std::vector<std::pair<double, double>> data;
-    std::vector<std::pair<double, double>> data_approximation;
-    for (size_t i = 0; i < bins; ++i) {
-
-        data.emplace_back(i, density[i]);
-        data_approximation.emplace_back(i, density_approximation[i]);
-
+    std::vector<double> radius(bins);
+    for(int i = 0; i < bins; ++i){
+        radius[i] = bin_size*i;
     }
 
-    Gnuplot gp;
-    gp << "set terminal png\n"; // Set the output format to PNG
-    gp << "set output 'output.png'\n"; // Set the output file
-    //approximation is 0 at r = 0, so we plot starting at 1
-    gp << "set logscale y\n"; // Set y axis to logarithmic scale
-    gp << "set xrange [1:*]\nset yrange [0:*]\n";
-    gp << "plot '-' with lines title 'density', '-' with lines title 'density approximation'\n";
-    gp.send1d(data);
-    gp.send1d(data_approximation);
+    write_to_file_2(radius, density, density_approximation, "density");
+
+    write_to_file_2(radius, num_particles , num_expected_particles, "num_particles");
+
+
+
+//    // Plotting
+//    std::vector<std::pair<double, double>> data;
+//    std::vector<std::pair<double, double>> data_approximation;
+//    for (size_t i = 0; i < bins; ++i) {
+//
+//        data.emplace_back(i, density[i]);
+//        data_approximation.emplace_back(i, density_approximation[i]);
+//
+//    }
+//
+//    Gnuplot gp;
+//    gp << "set terminal png\n"; // Set the output format to PNG
+//    gp << "set output 'output.png'\n"; // Set the output file
+//    //approximation is 0 at r = 0, so we plot starting at 1
+//    gp << "set logscale y\n"; // Set y axis to logarithmic scale
+//    gp << "set xrange [1:*]\nset yrange [0:*]\n";
+//    gp << "plot '-' with lines title 'density', '-' with lines title 'density approximation'\n";
+//    gp.send1d(data);
+//    gp.send1d(data_approximation);
 
 
 

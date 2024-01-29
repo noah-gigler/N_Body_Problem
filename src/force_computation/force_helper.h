@@ -6,7 +6,7 @@
 #define NBODYPROBLEM_FORCE_HELPER_H
 
 #include "../shared/particle.h"
-#include "../shared/data_reader.h"
+#include "../shared/data_io.h"
 #include "Octree.h"
 #include <cmath>
 #include <iostream>
