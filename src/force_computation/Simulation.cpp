@@ -15,7 +15,6 @@ Simulation::Simulation(std::string name, std::vector<Particle> particles, double
 
 void Simulation::run(unsigned n_steps, unsigned steps_per_frame) {
     for(int i = 0; i < n_steps; ++i) {
-        auto start = std::chrono::high_resolution_clock::now();
         if(integrator == Euler) {
             euler_step();
         } else if(integrator == Leapfrog) {
@@ -24,9 +23,7 @@ void Simulation::run(unsigned n_steps, unsigned steps_per_frame) {
         if(i % steps_per_frame == 0) {
             frame_to_file(i / steps_per_frame);
         }
-        auto stop = std::chrono::high_resolution_clock::now();
-        double time = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
-        std::cout << time << std::endl;
+        std::cout << "step: " << i << std::endl;
     }
 }
 

@@ -8,8 +8,13 @@
 
 void test_conversion() {
     std::vector<Particle> particles = buildFromData();
-    double steps = 2000;
-
+    std::vector<int> steps = {1024, 512, 256, 128, 64, 32};
+    std::vector<double> step_size = {2e-20, 2e-19, 2e-18, 2e-17, 2e-16, 2e-15};
+    double softening = 0.2 * mean_distance(particles);
+    for (int i = 0; i < steps.size(); ++i) {
+        Simulation sim = Simulation("sim_basic/run" + std::to_string(i+1), particles, steps[i], softening,Simulation::Direct, Simulation::Leapfrog);
+        sim.run(steps[i]);
+    }
 }
 
 void error_test(){
@@ -37,7 +42,7 @@ void error_test(){
 
 int main() {
     auto start = std::chrono::high_resolution_clock::now();
-    error_test();
+    test_conversion();
     auto stop = std::chrono::high_resolution_clock::now();
     double time = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
     std::cout << time << std::endl;
