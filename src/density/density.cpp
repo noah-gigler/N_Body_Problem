@@ -1,6 +1,5 @@
 #include <Eigen/Core>
 #include <algorithm>
-#include <gnuplot-iostream.h>
 #include "../shared/particle.h"
 #include "../shared/data_io.h"
 #include "non_linear_solver.h"
@@ -65,32 +64,7 @@ int main() {
     }
 
     write_to_file_2(radius, density, density_approximation, "density");
-
     write_to_file_2(radius, num_particles , num_expected_particles, "num_particles");
-
-
-
-//    // Plotting
-//    std::vector<std::pair<double, double>> data;
-//    std::vector<std::pair<double, double>> data_approximation;
-//    for (size_t i = 0; i < bins; ++i) {
-//
-//        data.emplace_back(i, density[i]);
-//        data_approximation.emplace_back(i, density_approximation[i]);
-//
-//    }
-//
-//    Gnuplot gp;
-//    gp << "set terminal png\n"; // Set the output format to PNG
-//    gp << "set output 'output.png'\n"; // Set the output file
-//    //approximation is 0 at r = 0, so we plot starting at 1
-//    gp << "set logscale y\n"; // Set y axis to logarithmic scale
-//    gp << "set xrange [1:*]\nset yrange [0:*]\n";
-//    gp << "plot '-' with lines title 'density', '-' with lines title 'density approximation'\n";
-//    gp.send1d(data);
-//    gp.send1d(data_approximation);
-
-
 
     return 0;
 }
