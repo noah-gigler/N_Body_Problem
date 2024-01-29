@@ -5,9 +5,11 @@ project(
   VERSION 1.0
   LANGUAGES CXX)
 
+set (CMAKE_CXX_STANDARD 20)
+
 #-fsanitize=address,undefined,leak -D_GLIBCXX_DEBUG ") -Wall -Wextra -Wpedantic -Werror -std=c++17 -O3 -march=native -mtune=native -fopenmp -fno-omit-frame-pointer -fsanitize=address,undefined,leak -D_GLIBCXX_DEBUG
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ")
-find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+find_package(Eigen3 3.4 REQUIRED NO_MODULE)
 find_package(Boost REQUIRED COMPONENTS iostreams)
 find_package(OpenMP REQUIRED)
 

@@ -28,7 +28,8 @@ void compute_forces(std::vector<Particle> &particles, double softening){
     std::vector<double> forces(particles.size());
     #pragma omp parallel for default(none) shared(particles) firstprivate(softening) collapse(2) schedule(guided)
     for (int i = 0; i < particles.size(); ++i) {
-        for(int j = i + 1; j < particles.size(); ++j) {
+        for(int j = 0; j < particles.size(); ++j) {
+            if(j <= i) continue;
             Eigen::Vector3d force = gravitational_force(particles[i], particles[j], softening);
             atomic_vec_add(particles[i].force, force);
             atomic_vec_add(particles[j].force, -force);

@@ -14,7 +14,8 @@ void test_conversion() {
 
 void error_test(){
     std::vector<Particle> particles = buildFromData();
-    int steps = 100;
+    // particles = std::vector<Particle>(particles.begin(), particles.begin() + 100);
+    int steps = 3;
     double step_size = 1e-5;
     double softening = 0.2 * mean_distance(particles);
     Simulation sim_direct = Simulation("sim_basic", particles, step_size, softening,Simulation::Direct, Simulation::Leapfrog);
@@ -39,4 +40,5 @@ int main() {
     error_test();
     auto stop = std::chrono::high_resolution_clock::now();
     double time = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
+    std::cout << time << std::endl;
 }
