@@ -59,7 +59,7 @@ class Visualizer(object):
         self.i += 1
         if self.i == 60:
             self.i = 0
-        self.x, self.y, self.z = read_xyz(path + 'xv_{}.txt'.format(self.i))
+        self.x, self.y, self.z = read_xyz(path + 'frame{}.txt'.format(self.i))
 
         self.set_plotdata(points=np.array([self.x, self.y, self.z]).transpose(), color=pg.glColor('w'))
         self.w.grabFramebuffer().save('frames/img_{}.png'.format(self.i))   
